@@ -8,11 +8,9 @@ const dbConfig = {
     password: '123123123123', // Пароль MySQL
     database: 'ragemp_server',
     charset: 'utf8mb4',
-    // Pool settings
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
-    // Connection settings
     ssl: false,
     multipleStatements: false
 };
