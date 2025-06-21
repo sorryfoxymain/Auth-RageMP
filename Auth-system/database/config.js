@@ -5,7 +5,7 @@ const dbConfig = {
     host: 'localhost',
     port: 3306,
     user: 'root',
-    password: 'asdHJbghu2i3123kaBhASDIU12', // Пароль MySQL
+    password: '123123123123', // Пароль MySQL
     database: 'ragemp_server',
     charset: 'utf8mb4',
     // Pool settings
