@@ -1,7 +1,7 @@
 let browser = null;
 let cursorVisible = false;
 
-// Функция для переключения видимости курсора
+
 function toggleCursor() {
     cursorVisible = !cursorVisible;
     mp.gui.cursor.show(cursorVisible, cursorVisible);
@@ -20,12 +20,12 @@ mp.events.add('playerReady', () => {
     }
 });
 
-// Добавляем обработчик нажатия клавиши F2
-mp.keys.bind(0x71, false, () => { // 0x71 - это код клавиши F2
+
+mp.keys.bind(0x71, false, () => { 
     toggleCursor();
 });
 
-// Обработчики событий из браузера (обновленные для новых параметров)
+
 mp.events.add('auth:login', (login, password) => {
     mp.console.logInfo(`Login attempt: ${login}`);
     try {
@@ -44,11 +44,10 @@ mp.events.add('auth:register', (username, email, phone, password) => {
     }
 });
 
-// Универсальный обработчик для вызова серверных событий
+
 mp.events.add('callToServer', (eventName, ...args) => {
     mp.console.logInfo(`Calling server event: ${eventName}, args count: ${args.length}`);
     
-    // Дополнительная отладка для авторизации
     if (eventName === 'auth:login') {
         mp.console.logInfo(`Auth login event details: login: ${args[0]}, password provided: ${args[1] ? 'yes' : 'no'}`);
     } else if (eventName === 'auth:register') {
@@ -65,7 +64,7 @@ mp.events.add('callToServer', (eventName, ...args) => {
 
 mp.events.add('auth:success', () => {
     try {
-        // Закрываем меню авторизации
+        
         if (browser && browser.url) {
             browser.destroy();
             browser = null;
@@ -73,11 +72,11 @@ mp.events.add('auth:success', () => {
             mp.browsers.at('package://login-ui/index.html').destroy();
         }
         
-        // Скрываем курсор
+        
         mp.gui.cursor.show(false, false);
         cursorVisible = false;
         
-        // Устанавливаем переменную авторизации
+        
         mp.players.local.setVariable('loggedIn', true);
         
         mp.console.logInfo('Auth success, login UI closed');
@@ -91,7 +90,7 @@ mp.events.add('auth:success', () => {
 mp.events.add('auth:error', (message) => {
     try {
         if (browser && browser.url) {
-            // Экранируем кавычки в сообщении для безопасного выполнения JavaScript
+            
             const safeMessage = message.replace(/'/g, "\\'").replace(/"/g, '\\"');
             browser.execute(`showError('${safeMessage}')`);
         } else if (mp.browsers.exists('package://login-ui/index.html')) {
@@ -104,11 +103,11 @@ mp.events.add('auth:error', (message) => {
     }
 });
 
-// Добавляем обработчик для события spawn
+
 mp.events.add('playerSpawn', () => {
     mp.console.logInfo('Player spawn event triggered');
     
-    // Проверяем, авторизован ли игрок
+    
     const isLoggedIn = mp.players.local.getVariable('loggedIn');
     
     if (!isLoggedIn && !browser) {
@@ -129,7 +128,7 @@ mp.events.add('playerSpawn', () => {
     }
 });
 
-// Добавляем обработчик для принудительного показа окна логина
+
 mp.events.add('auth:showLogin', () => {
     mp.console.logInfo('Show login event triggered');
     if (browser) {
@@ -147,8 +146,8 @@ mp.events.add('auth:showLogin', () => {
     }
 });
 
-// Обработка выхода из игры
+
 mp.events.add('playerQuit', () => {
-    // Сбрасываем состояние авторизации
+    
     mp.players.local.setVariable('loggedIn', false);
 }); 
