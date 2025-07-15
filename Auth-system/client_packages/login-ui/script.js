@@ -1,6 +1,6 @@
 console.log('Login UI script loaded');
 
-// Регулярные выражения для валидации
+
 const VALIDATION_PATTERNS = {
     username: /^[A-Za-z]+$/,
     password: /^(?=.*[A-Z]).{6,}$/,
@@ -8,7 +8,7 @@ const VALIDATION_PATTERNS = {
     phone: /^\+\d{10,15}$/
 };
 
-// Функция для переключения видимости пароля
+
 function togglePassword(inputId) {
     const input = document.getElementById(inputId);
     const button = input.parentElement.querySelector('.toggle-password');
@@ -22,7 +22,7 @@ function togglePassword(inputId) {
     }
 }
 
-// Функция для показа ошибки в поле
+
 function showFieldError(fieldId, message) {
     const errorElement = document.getElementById(fieldId + '-error');
     const inputElement = document.getElementById(fieldId);
@@ -37,7 +37,7 @@ function showFieldError(fieldId, message) {
     }
 }
 
-// Функция для показа успеха в поле
+
 function showFieldSuccess(fieldId, message = '') {
     const errorElement = document.getElementById(fieldId + '-error');
     const inputElement = document.getElementById(fieldId);
@@ -52,7 +52,7 @@ function showFieldSuccess(fieldId, message = '') {
     }
 }
 
-// Функция для очистки ошибок поля
+
 function clearFieldError(fieldId) {
     const errorElement = document.getElementById(fieldId + '-error');
     const inputElement = document.getElementById(fieldId);
@@ -65,7 +65,7 @@ function clearFieldError(fieldId) {
     }
 }
 
-// Валидация имени пользователя
+
 function validateUsername(username) {
     if (!username) {
         return 'Имя пользователя не может быть пустым';
@@ -79,7 +79,7 @@ function validateUsername(username) {
     return null;
 }
 
-// Валидация пароля
+
 function validatePassword(password) {
     if (!password) {
         return 'Пароль не может быть пустым';
@@ -90,7 +90,7 @@ function validatePassword(password) {
     return null;
 }
 
-// Валидация email
+
 function validateEmail(email) {
     if (!email) {
         return 'Email не может быть пустым';
@@ -101,7 +101,7 @@ function validateEmail(email) {
     return null;
 }
 
-// Валидация телефона
+
 function validatePhone(phone) {
     if (!phone) {
         return 'Телефон не может быть пустым';
@@ -112,7 +112,7 @@ function validatePhone(phone) {
     return null;
 }
 
-// Определение типа логина (username или email)
+
 function getLoginType(login) {
     return login.includes('@') ? 'email' : 'username';
 }
@@ -135,7 +135,7 @@ function toggleForms() {
         registerForm.style.display = 'none';
     }
     
-    // Очищаем все ошибки при переключении форм
+    
     clearAllErrors();
     showError('');
 }
@@ -153,7 +153,7 @@ function handleLogin() {
     
     let hasErrors = false;
     
-    // Валидация логина
+    
     if (!login) {
         showFieldError('login-user', 'Введите логин или email');
         hasErrors = true;
@@ -178,7 +178,7 @@ function handleLogin() {
         }
     }
     
-    // Валидация пароля
+    
     if (!password) {
         showFieldError('login-pass', 'Введите пароль');
         hasErrors = true;
@@ -208,7 +208,7 @@ function handleRegister() {
     
     let hasErrors = false;
     
-    // Валидация имени пользователя
+    
     const usernameError = validateUsername(username);
     if (usernameError) {
         showFieldError('reg-user', usernameError);
@@ -217,7 +217,7 @@ function handleRegister() {
         showFieldSuccess('reg-user');
     }
     
-    // Валидация email
+    
     const emailError = validateEmail(email);
     if (emailError) {
         showFieldError('reg-email', emailError);
@@ -226,7 +226,7 @@ function handleRegister() {
         showFieldSuccess('reg-email');
     }
     
-    // Валидация телефона
+    
     const phoneError = validatePhone(phone);
     if (phoneError) {
         showFieldError('reg-phone', phoneError);
@@ -235,7 +235,7 @@ function handleRegister() {
         showFieldSuccess('reg-phone');
     }
     
-    // Валидация пароля
+    
     const passwordError = validatePassword(password);
     if (passwordError) {
         showFieldError('reg-pass', passwordError);
@@ -244,7 +244,7 @@ function handleRegister() {
         showFieldSuccess('reg-pass');
     }
     
-    // Валидация подтверждения пароля
+    
     if (!confirmPassword) {
         showFieldError('reg-pass-confirm', 'Подтвердите пароль');
         hasErrors = true;
@@ -273,16 +273,16 @@ function showError(message) {
     }
 }
 
-// Экспорт функций в глобальную область
+
 window.togglePassword = togglePassword;
 window.toggleForms = toggleForms;
 window.handleLogin = handleLogin;
 window.handleRegister = handleRegister;
 window.showError = showError;
 
-// Добавляем валидацию в реальном времени
+
 function addRealTimeValidation() {
-    // Валидация для логина
+    
     const loginUser = document.getElementById('login-user');
     if (loginUser) {
         loginUser.addEventListener('blur', function() {
@@ -301,7 +301,7 @@ function addRealTimeValidation() {
         });
     }
     
-    // Валидация для полей регистрации
+    
     const regUser = document.getElementById('reg-user');
     if (regUser) {
         regUser.addEventListener('blur', function() {
@@ -416,7 +416,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Добавляем валидацию в реальном времени
+    
     addRealTimeValidation();
 });
 
