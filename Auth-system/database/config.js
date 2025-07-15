@@ -1,11 +1,11 @@
 const mysql = require('mysql2/promise');
 
-// Конфигурация подключения к базе данных
+
 const dbConfig = {
     host: 'localhost',
     port: 3306,
     user: 'root',
-    password: '123123123123', // Пароль MySQL
+    password: '123123123123', 
     database: 'ragemp_server',
     charset: 'utf8mb4',
     waitForConnections: true,
@@ -15,10 +15,10 @@ const dbConfig = {
     multipleStatements: false
 };
 
-// Создание пула соединений
+
 const pool = mysql.createPool(dbConfig);
 
-// Функция для выполнения SQL-запросов
+
 async function executeQuery(query, params = []) {
     try {
         const [rows] = await pool.execute(query, params);
@@ -29,7 +29,7 @@ async function executeQuery(query, params = []) {
     }
 }
 
-// Функция для проверки подключения к базе данных
+
 async function testConnection() {
     try {
         const connection = await pool.getConnection();
@@ -42,7 +42,7 @@ async function testConnection() {
     }
 }
 
-// Функция для закрытия пула соединений
+
 async function closePool() {
     try {
         await pool.end();
