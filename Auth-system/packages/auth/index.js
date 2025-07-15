@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const path = require('path');
 
-// Импортируем конфигурацию базы данных
+
 let executeQuery, testConnection;
 try {
     const dbConfig = require('../../database/config');
@@ -13,10 +13,10 @@ try {
     console.log('[Auth] Error:', error.message);
 }
 
-// Константы для хеширования паролей
+
 const SALT_ROUNDS = 12;
 
-// Регулярные выражения для валидации (серверная сторона)
+
 const VALIDATION_PATTERNS = {
     username: /^[A-Za-z]+$/,
     password: /^(?=.*[A-Z]).{6,}$/,
@@ -24,7 +24,7 @@ const VALIDATION_PATTERNS = {
     phone: /^\+\d{10,15}$/
 };
 
-// Функции валидации на сервере
+
 function validateUsername(username) {
     if (!username) {
         return 'Имя пользователя не может быть пустым';
@@ -68,9 +68,8 @@ function validatePhone(phone) {
     return null;
 }
 
-// Функции для работы с базой данных
 
-// Поиск пользователя по username или email
+
 async function findUserByLogin(login) {
     try {
         const isEmail = login.includes('@');
@@ -92,7 +91,7 @@ async function findUserByLogin(login) {
     }
 }
 
-// Проверка уникальности username
+
 async function isUsernameUnique(username) {
     try {
         const query = 'SELECT COUNT(*) as count FROM accounts WHERE username = ?';
@@ -104,7 +103,7 @@ async function isUsernameUnique(username) {
     }
 }
 
-// Проверка уникальности email
+
 async function isEmailUnique(email) {
     try {
         const query = 'SELECT COUNT(*) as count FROM accounts WHERE email = ?';
@@ -116,10 +115,10 @@ async function isEmailUnique(email) {
     }
 }
 
-// Создание нового пользователя в базе данных
+
 async function createUser(username, email, phone, password) {
     try {
-        // Хешируем пароль с помощью bcrypt
+        
         const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
         
         const query = `
@@ -144,7 +143,7 @@ async function createUser(username, email, phone, password) {
     }
 }
 
-// Проверка пароля пользователя
+
 async function verifyPassword(plainPassword, hashedPassword) {
     try {
         return await bcrypt.compare(plainPassword, hashedPassword);
@@ -154,7 +153,7 @@ async function verifyPassword(plainPassword, hashedPassword) {
     }
 }
 
-// Получение статистики пользователей
+
 async function getUserStats() {
     try {
         const query = 'SELECT COUNT(*) as total_users FROM accounts';
@@ -166,7 +165,7 @@ async function getUserStats() {
     }
 }
 
-// Инициализация базы данных
+
 async function initializeDatabase() {
     if (!testConnection) {
         console.log('[Auth] Database functions not available, running in fallback mode');
@@ -186,10 +185,10 @@ async function initializeDatabase() {
     }
 }
 
-// Инициализируем базу данных при запуске
+
 initializeDatabase();
 
-// Обработчики remote событий
+
 mp.events.add('auth:register', (player, username, email, phone, password) => {
     console.log(`[Auth] Registration attempt: ${username}, ${email} from player ${player.name}`);
     handleRegister(player, username, email, phone, password);
@@ -222,7 +221,7 @@ async function handleRegister(player, username, email, phone, password) {
     try {
         console.log(`[Auth] Registration attempt: ${username}, ${email}, ${phone}`);
         
-        // Серверная валидация всех полей
+        
         const usernameError = validateUsername(username);
         if (usernameError) {
             player.call('auth:error', [usernameError]);
@@ -247,24 +246,24 @@ async function handleRegister(player, username, email, phone, password) {
         return;
     }
     
-        // Проверка уникальности username
+       
         const isUsernameUniqueResult = await isUsernameUnique(username);
         if (!isUsernameUniqueResult) {
             player.call('auth:error', ['Это имя пользователя уже занято']);
         return;
     }
 
-        // Проверка уникальности email
+        
         const isEmailUniqueResult = await isEmailUnique(email);
         if (!isEmailUniqueResult) {
             player.call('auth:error', ['Этот email уже зарегистрирован']);
             return;
         }
 
-        // Создаем нового пользователя в базе данных
+        
         const newUser = await createUser(username, email, phone, password);
         
-        // Устанавливаем переменные игрока
+        
     player.setVariable('loggedIn', true);
         player.setVariable('userId', newUser.id);
         player.setVariable('username', username);
@@ -298,7 +297,7 @@ async function handleLogin(player, login, password) {
     
         console.log(`[Auth] Found user: ${user.username} (ID: ${user.id}), checking password...`);
         
-        // Проверяем пароль с помощью bcrypt
+        
         const isPasswordValid = await verifyPassword(password, user.password_hash);
         if (!isPasswordValid) {
             console.log(`[Auth] Password mismatch for user ${login}`);
@@ -306,7 +305,7 @@ async function handleLogin(player, login, password) {
         return;
     }
 
-        // Устанавливаем переменные игрока
+        
     player.setVariable('loggedIn', true);
         player.setVariable('userId', user.id);
         player.setVariable('username', user.username);
@@ -321,11 +320,11 @@ async function handleLogin(player, login, password) {
     }
 }
 
-// Добавляем обработчик спавна
+
 mp.events.add('playerSpawn', (player) => {
     if (!player.getVariable('loggedIn')) {
         console.log(`[Auth] Player ${player.name} spawned without authentication`);
-        // Создаем браузер заново, если игрок не авторизован
+        
         player.call('auth:showLogin');
     } else {
         const username = player.getVariable('username');
@@ -334,11 +333,11 @@ mp.events.add('playerSpawn', (player) => {
     }
 });
 
-// Команды для администрирования
 
-// Команда для просмотра зарегистрированных пользователей
+
+
 mp.events.addCommand('listusers', async (player, args) => {
-    if (player.name === 'Admin') { // Только для админа
+    if (player.name === 'Admin') { 
         try {
             const query = 'SELECT id, username, email, phone, created_at FROM accounts ORDER BY created_at DESC LIMIT 10';
             const users = await executeQuery(query);
@@ -357,9 +356,9 @@ mp.events.addCommand('listusers', async (player, args) => {
     }
 });
 
-// Команда для получения информации о пользователе
+
 mp.events.addCommand('userinfo', async (player, fullText) => {
-    if (player.name === 'Admin') { // Только для админа
+    if (player.name === 'Admin') { 
         const args = fullText.split(' ');
         if (args.length < 1) {
             player.outputChatBox('Использование: /userinfo <username или email>');
@@ -387,9 +386,9 @@ mp.events.addCommand('userinfo', async (player, fullText) => {
     }
 });
 
-// Команда для получения статистики
+
 mp.events.addCommand('authstats', async (player) => {
-    if (player.name === 'Admin') { // Только для админа
+    if (player.name === 'Admin') { 
         try {
             const totalUsers = await getUserStats();
             const query = 'SELECT DATE(created_at) as date, COUNT(*) as count FROM accounts WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY) GROUP BY DATE(created_at) ORDER BY date DESC';
